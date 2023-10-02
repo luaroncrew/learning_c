@@ -10,9 +10,10 @@ typedef struct _elem
     struct _elem* next;
 } Elem;
 
+
 void afficher(Elem * node);
 void ajouter_en_tete(Elem ** lastNode);
-
+void rechercher(Elem * node);
 
 int main(void)
 {
@@ -25,6 +26,7 @@ int main(void)
         printf("menu:\n");
         printf("\t1: ajouter en tete\n");
         printf("\t2: afficher la liste\n");
+        printf("\t3: chercher un element\n");
         printf("\t0: quitter\n");
         int choix;
         scanf("%d", &choix);
@@ -38,6 +40,8 @@ int main(void)
             case 2:
                 afficher(firstNode);
                 break;
+            case 3:
+                rechercher(firstNode);
             default:
                 printf("choix incorrect\n");
                 continue ;
@@ -70,6 +74,28 @@ void afficher(Elem * node) {
         }
         else {
             break;
+        }
+    }
+}
+
+
+void rechercher(Elem * firstNode) {
+    int counter = 0;
+    int searchedElement;
+    Elem * currentNode = firstNode;
+    scanf("%d", &searchedElement);
+    while (1) {
+        if (currentNode->value == searchedElement) {
+            printf("element found on position %d \n", counter);
+            break;
+        }
+        else {
+            currentNode = currentNode->next;
+            counter += 1;
+            if (currentNode->next == NULL && currentNode->value != searchedElement) {
+                printf("element not found in the collection \n");
+                break;
+            }
         }
     }
 }
