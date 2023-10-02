@@ -27,6 +27,8 @@ int ExtractMax(BinaryHeap * heap, int * val);
 /* Destroy frees the structure and the array */
 void Destroy(BinaryHeap * heap);
 
+void printArray(int * array, int length);
+
 
 int main(void)
 {
@@ -64,6 +66,11 @@ BinaryHeap * Init(int size)
 
 void InsertValue(BinaryHeap * heap, int value)
 {
+    if (heap->allocated == heap->filled) {
+        heap->allocated ++;
+        heap->array = (int *) realloc(heap->array, sizeof(int) * heap->allocated);
+    }
+
     int elementPlaced = 0;
     int newElementIndex = heap->filled;
     int parentElementIndex = ((newElementIndex - 1) / 2);
@@ -71,17 +78,14 @@ void InsertValue(BinaryHeap * heap, int value)
 
     // insert at the end of the heap
     (heap->array)[newElementIndex] = value;
-
     heap->filled += 1;
 
-    printf("%d", heap->filled);
     // if element is the top of the heap, we finished the operation
     if (heap->filled == 1) {
         return;
     }
 
     // place element correctly parent = (i-1)/2
-
     while (!elementPlaced) {
         if (heap->array[parentElementIndex] > heap->array[newElementIndex]) {
             elementPlaced = 1;
@@ -91,24 +95,61 @@ void InsertValue(BinaryHeap * heap, int value)
             heap->array[parentElementIndex] = value;
             newElementIndex = parentElementIndex;
             parentElementIndex = ((newElementIndex - 1) / 2);
+            if (parentElementIndex == newElementIndex) {
+                break;
+            }
         }
     }
 
-
-    /* put your insert code here */
 }
 
 int ExtractMax(BinaryHeap * heap, int *res)
 {
-    /* put your extraction code here */
-    return 0;
+    *res = heap->array[0];
+    if (heap->filled == 0) {
+        *res = 0;
+        return *res;
+    }
+    heap->filled -= 1;
+    heap->array[0] = heap->array[(heap->filled)];
+    int newElementIndex = 0;
+    while (1) {
+        // if the element placed at the bottom of the heap, it can't be shift down anymore
+        if (2*newElementIndex + 1 >= heap->filled) {
+            return *res;
+        }
+        // shift down the element if still not placed correctly
+        if (heap->array[newElementIndex] > heap->array[(2*newElementIndex+1)] &&
+        heap->array[newElementIndex] > heap->array[(2*newElementIndex+2)]
+        ) {
+            return *res;
+        }
+        else {
+            int biggerNodeIndex;
+            if (heap->array[(2*newElementIndex+1)] > heap->array[(2*newElementIndex+2)]) {
+                biggerNodeIndex = (2*newElementIndex+1);
+            }
+            else {
+                biggerNodeIndex = (2*newElementIndex+2);
+            }
+            int swap = heap->array[newElementIndex];
+            heap->array[newElementIndex] = heap->array[biggerNodeIndex];
+            heap->array[biggerNodeIndex] = swap;
+            newElementIndex = biggerNodeIndex;
+        }
+    }
 }
 
 void Destroy(BinaryHeap * heap)
 {
-    for (int i = 0; i < (heap->filled); i++) {
-        printf("%d\r\f", (heap->array)[i]);
-    }
     free(heap->array);
     free(heap);
+}
+
+void printArray(int * array, int length) {
+    int i;
+    for (i = 0; i < length; i++) {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
 }
