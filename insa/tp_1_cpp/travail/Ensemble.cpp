@@ -332,33 +332,32 @@ int Ensemble::Reunir(const Ensemble &unEnsemble) {
 
 unsigned int Ensemble::Intersection(const Ensemble &unEnsemble) {
     int counterElementsToRemove = currentSetLength;
-    int elementsToLeaveBits[currentSetLength];
+    bool elementsToLeaveBits[currentSetLength];
+    for (int i = 0; i < currentSetLength; i++) {
+        elementsToLeaveBits[i] = false;
+    }
     for (int i = 0; i < unEnsemble.currentSetLength; i++) {
         for (int k = 0; k < currentSetLength; k ++) {
             if (numbers[k] == unEnsemble.numbers[i]) {
-                elementsToLeaveBits[k] = 1;
+                elementsToLeaveBits[k] = true;
                 counterElementsToRemove -= 1;
-            }
-            else {
-                elementsToLeaveBits[k] = 0;
+                break;
             }
         }
     }
-    // debug
+
+    int * replacementNumbers = new int[(currentSetLength-counterElementsToRemove)];
+    int replacementNumbersNextIndex = 0;
     for (int i = 0; i < currentSetLength; i++) {
-        cout << " " << elementsToLeaveBits[i];
-    }
-    cout << "\n";
-    if (counterElementsToRemove) {
-        int * replacementNumbers = new int[currentSetLength-counterElementsToRemove];
-        int replacementNumbersNextIndex = 0;
-        for (int i = 0; i < currentSetLength; i++) {
-            if (elementsToLeaveBits[i] == 1) {
-                replacementNumbers[replacementNumbersNextIndex] = numbers[i];
-                replacementNumbersNextIndex += 1;
-            }
-        };
-        delete [] numbers;
-    }
+        if (elementsToLeaveBits[i]) {
+            replacementNumbers[replacementNumbersNextIndex] = numbers[i];
+            replacementNumbersNextIndex += 1;
+        }
+    };
+    delete [] numbers;
+    numbers = replacementNumbers;
+    currentSetLength = (currentSetLength-counterElementsToRemove);
+    maxSetLength = currentSetLength;
+
     return counterElementsToRemove;
 }
