@@ -233,6 +233,7 @@ void test9() {
     int table6[7] = {1, 2, 3};
     Ensemble set6 = Ensemble(table6, 3);
 
+
     result = set5.Reunir(set6);
     bool testThree = (result == 0);
     cout << "test 9.3 - ";
@@ -264,6 +265,34 @@ void test9() {
     cout << testFive;
     cout << "\n";
 
+
+}
+
+
+void test10() {
+    int table10[3] = {1, 2, 3};
+    Ensemble set10 = Ensemble(table10, 3);
+
+    int table8[3] = {2, 3};
+    Ensemble set8 = Ensemble(table8, 3);
+
+    unsigned int elementsToRemove = set10.Intersection(set8);
+    bool testOne = (elementsToRemove == 1);
+    cout << "test 10.1 - ";
+    cout << testOne;
+    cout << "\n";
+
+    int table1[7] = {1, 12, 6, 1, 10, 1, 1};
+    Ensemble set1 = Ensemble(table1, 7);
+    Ensemble wipedSet = Ensemble();
+
+    unsigned int elementsToRemove1 = set1.Intersection(wipedSet);
+    bool testTwo = (elementsToRemove1 == 4);
+    cout << "test 10.2 - ";
+    cout << testTwo;
+    cout << "\n";
+
+    set1.Afficher();
     set10.Afficher();
 
 }
@@ -317,4 +346,5 @@ int main() {
     test7();
     test8();
     test9();
+    test10();
 }

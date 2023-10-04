@@ -196,14 +196,14 @@ unsigned int Ensemble::Ajuster(int delta) {
     for (int i = 0; i < currentSetLength; i++) {
         replacementNumbers[i] = numbers[i];
     }
-    delete numbers;
+    delete [] numbers;
     numbers = replacementNumbers;
     return maxSetLength;
 }
 
 bool Ensemble::Retirer(int element) {
     if (currentSetLength == 0) {
-        delete numbers;
+        delete [] numbers;
         numbers = new int[0];
         maxSetLength = currentSetLength;
         return false;
@@ -219,7 +219,7 @@ bool Ensemble::Retirer(int element) {
         for (int k = 0; k < (currentSetLength - 1); k ++) {
             replacementNumbers[k] = numbers[k];
         }
-        delete numbers;
+        delete [] numbers;
         numbers = replacementNumbers;
         currentSetLength -= 1;
         maxSetLength = currentSetLength;
@@ -230,7 +230,7 @@ bool Ensemble::Retirer(int element) {
         for (int k = 0; k < (currentSetLength); k ++) {
             replacementNumbers[k] = numbers[k];
         }
-        delete numbers;
+        delete [] numbers;
         numbers = replacementNumbers;
         maxSetLength = currentSetLength;
         return false;
@@ -244,7 +244,7 @@ bool Ensemble::Retirer(int element) {
                 replacementIndex += 1;
             }
         }
-        delete numbers;
+        delete [] numbers;
         numbers = replacementNumbers;
         currentSetLength -= 1;
         maxSetLength = currentSetLength;
@@ -279,7 +279,7 @@ unsigned int Ensemble::Retirer(const Ensemble & unEnsemble) {
         }
     }
 
-    delete numbers;
+    delete [] numbers;
     numbers = replacementNumbers;
     currentSetLength -= indicesCounter;
     return indicesCounter;
@@ -303,7 +303,7 @@ int Ensemble::Reunir(const Ensemble &unEnsemble) {
     }
     if ((elementsToAdd + currentSetLength) <= maxSetLength) {
         int toAddElementsIndex = 0;
-        for (int k = currentSetLength; k < maxSetLength; k ++) {
+        for (int k = currentSetLength; k < currentSetLength + elementsToAdd; k ++) {
             numbers[k] = unEnsemble.numbers[elementsToAddIndices[toAddElementsIndex]];
             toAddElementsIndex += 1;
         }
@@ -317,7 +317,7 @@ int Ensemble::Reunir(const Ensemble &unEnsemble) {
             replacementNumbers[replacementNumbersLength] = numbers[k];
             replacementNumbersLength += 1;
         }
-        delete numbers;
+        delete [] numbers;
         for (int k = 0; k < elementsToAdd; k++) {
             replacementNumbers[replacementNumbersLength] = unEnsemble.numbers[elementsToAddIndices[k]];
             replacementNumbersLength += 1;
@@ -329,3 +329,36 @@ int Ensemble::Reunir(const Ensemble &unEnsemble) {
     }
 }
 
+
+unsigned int Ensemble::Intersection(const Ensemble &unEnsemble) {
+    int counterElementsToRemove = currentSetLength;
+    int elementsToLeaveBits[currentSetLength];
+    for (int i = 0; i < unEnsemble.currentSetLength; i++) {
+        for (int k = 0; k < currentSetLength; k ++) {
+            if (numbers[k] == unEnsemble.numbers[i]) {
+                elementsToLeaveBits[k] = 1;
+                counterElementsToRemove -= 1;
+            }
+            else {
+                elementsToLeaveBits[k] = 0;
+            }
+        }
+    }
+    // debug
+    for (int i = 0; i < currentSetLength; i++) {
+        cout << " " << elementsToLeaveBits[i];
+    }
+    cout << "\n";
+    if (counterElementsToRemove) {
+        int * replacementNumbers = new int[currentSetLength-counterElementsToRemove];
+        int replacementNumbersNextIndex = 0;
+        for (int i = 0; i < currentSetLength; i++) {
+            if (elementsToLeaveBits[i] == 1) {
+                replacementNumbers[replacementNumbersNextIndex] = numbers[i];
+                replacementNumbersNextIndex += 1;
+            }
+        };
+        delete [] numbers;
+    }
+    return counterElementsToRemove;
+}
